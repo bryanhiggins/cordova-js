@@ -19,8 +19,30 @@
  *
 */
 
-document.addEventListener("DOMContentLoaded", function () {
-    if (require('cordova/platform').runtime() === 'air') {
-        require('cordova/channel').onNativeReady.fire();
-    }
+describe("blackberry10 device", function () {
+    var device = require('cordova/plugin/blackberry10/device');
+    
+    it("calls the win callback with the device info", function () {
+        global.blackberry = {
+            system: {
+                softwareVersion: "NaN"
+            },
+            identity: {
+                uuid: 1
+            }
+        };
+
+        var info;
+
+        //HACK: I know this is a sync call ;)
+        device.getDeviceInfo({}, function (i) { info = i; });
+
+        expect(info.platform).toBe("BlackBerry");
+        expect(info.version).toBe("NaN");
+        expect(info.name).toBe("Dev Alpha");
+        expect(info.uuid).toBe(1);
+        expect(info.cordova).toBeDefined();
+        
+        delete global.blackberry;
+    });
 });

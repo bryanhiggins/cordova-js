@@ -22,14 +22,15 @@
 describe("blackberry platform", function () {
     var platform = require('cordova/blackberryplatform');
 
-    describe("when getting the runtime", function () {
-        it("returns qnx for the bb10 user agent", function () {
-            navigator.__defineGetter__("userAgent", function () {
-               return "Mozilla/5.0 (BB10; Touch) AppleWebKit/537.1+ (KHTML, like Gecko) Version/10.0.0.1337 Mobile Safari/537.1+";
-            });
-            expect(platform.runtime()).toBe("qnx");
-        });
+    beforeEach(function () {
+        GLOBAL.navigator = {};
+    });
 
+    afterEach(function () {
+        delete GLOBAL.navigator;
+    });
+
+    describe("when getting the runtime", function () {
         it("returns air for the playbook user agent", function () {
             navigator.__defineGetter__("userAgent", function () {
                return "Mozilla/5.0 (PlayBook; U; RIM Tablet OS 2.1.0; en-US) AppleWebKit/536.2+ (KHTML, like Gecko) Version/7.2.1.0 Safari/536.2+";
@@ -76,14 +77,14 @@ describe("blackberry platform", function () {
         });
 
         it("builds given platforms merges into window and merges them", function () {
-            var qnx = require('cordova/plugin/qnx/platform');
+            var java = require('cordova/plugin/java/platform');
 
-            spyOn(qnx, "initialize");
-            spyOn(platform, "runtime").andReturn("qnx");
+            spyOn(java, "initialize");
+            spyOn(platform, "runtime").andReturn("java");
 
             platform.initialize();
 
-            expect(builder.buildIntoAndMerge).toHaveBeenCalledWith(qnx.merges, window);
+            expect(builder.buildIntoAndMerge).toHaveBeenCalledWith(java.merges, window);
         });
     });
 });
